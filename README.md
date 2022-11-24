@@ -3,4 +3,4 @@
 
 2、演示效果
 
-![演示效果图片](https://github.com/RCsai/CSRnet-Pytorch/blob/main/result/txt/show.jpg)
+![演示效果图片](https://github.com/RCsai/BootStrap-Table/blob/main/img/test.png)
