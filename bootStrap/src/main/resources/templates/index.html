@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bootStrap-Table测试</title>
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap-table.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container" style="background-color: whitesmoke;margin-top: 30px">
+
+        <div class="row col-md-10 col-md-offset-1">
+            <div id="toolbar">
+                <div class="form-inline" role="form" style="margin-left: 10px">
+                    <div class="form-group">
+                        <select id="selectExportDataType" class="form-control">
+                            <option value="basic">导出当前页</option>
+                            <option value="selected">导出所选数据</option>
+                            <option value="all">导出所有数据</option>
+                        </select>
+                    </div>
+                    <!--                        <button type="button" onclick="exportData()" class='btn btn-mini btn-info'>导出</button>-->
+                    <button type="button" class='btn btn-mini btn-info' data-toggle="modal" data-target="#add_user">新增</button>
+                </div>
+            </div>
+
+
+            <div>
+                <table id="testTable"></table>
+            </div>
+
+
+            <div class="modal fade" tabindex="-1" id="add_user" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 style="color: #5bc0de">新增人员信息</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-inline input_modal_1">
+                                <label class="input_label col-md-5"><strong style="color: red">*</strong>用户名:</label>
+                                <input class="form-control" id="a_userId">
+                            </div>
+                            <div class="form-inline input_modal_1">
+                                <label class="input_label col-md-5"><strong style="color: red">*</strong>密码:</label>
+                                <input class="form-control" id="a_password">
+                            </div>
+                            <div class="form-inline input_modal_1">
+                                <label class="input_label col-md-5"><strong style="color: red">*</strong>电话:</label>
+                                <input class="form-control" id="a_Tel">
+                            </div>
+                            <div class="form-inline input_modal_1">
+                                <button type="button" class="btn btn-primary" id="btn_addUser">增加</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" tabindex="-1" id="edit_user" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 style="color: #5bc0de">修改人员信息</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-inline input_modal_1">
+                                <label class="input_label col-md-5"><strong style="color: red">*</strong>用户名:</label>
+                                <input class="form-control" id="userId" readonly="true">
+                            </div>
+                            <div class="form-inline input_modal_1">
+                                <label class="input_label col-md-5"><strong style="color: red">*</strong>密码:</label>
+                                <input class="form-control" id="password">
+                            </div>
+                            <div class="form-inline input_modal_1">
+                                <label class="input_label col-md-5"><strong style="color: red">*</strong>电话:</label>
+                                <input class="form-control" id="Tel">
+                            </div>
+                            <div class="form-inline input_modal_1">
+                                <button type="button" class="btn btn-primary" id="btn_editUser">修改</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/jquery-3.6.1.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="js/bootstrap.js"></script>
+
+    <script src="js/bootstrap-table.js"></script>
+    <script src="js/bootstrap-table-zh-CN.js"></script>
+    <script src="js/bootstrap-table-export.js"></script>
+
+    <script src="js/FileSaver.min.js"></script>
+    <!--<script src="bootstrap-table-export/FileSaver.min.js.map"></script>-->
+    <script src="js/xlsx.core.min.js"></script>
+    <script src="js/html2canvas.min.js"></script>
+    <script src="js/tableExport.js"></script>
+
+    <script src="js/data.js"></script>
+
+    <script type="text/javascript">
+        $("#btn_addUser").click(function (){
+            var userId=$("#a_userId").val();
+            var password=$("#a_password").val();
+            var Tel=$("#a_Tel").val();
+            var data_json={}
+            data_json["userId"]=userId;
+            data_json["password"]=password;
+            data_json["Tel"]=Tel;
+
+            $.ajax({
+                type:"GET",
+                data:data_json,
+                dataType:"json",
+                url:"/addUser",
+                success:function (data){
+                    alert(data.msg);
+                    $("#add_user").modal("hide");
+                    $("#testTable").bootstrapTable("refresh",{url:"/getUser"});
+                },
+                error:function (){
+                    alert("返回数据失败")
+                }
+            })
+        })
+
+
+        $("#btn_editUser").click(function (){
+            var userId=$("#userId").val();
+            var password=$("#password").val();
+            var Tel=$("#Tel").val();
+            var data_json={}
+            data_json["userId"]=userId;
+            data_json["password"]=password;
+            data_json["Tel"]=Tel;
+
+            $.ajax({
+                type:"GET",
+                data:data_json,
+                dataType:"json",
+                url:"/editUser",
+                success:function (data){
+                    alert(data.msg);
+                    $("#edit_user").modal("hide");
+                    $("#testTable").bootstrapTable("refresh",{url:"/getUser"});
+                },
+                error:function (){
+                    alert("返回数据失败")
+                }
+            })
+        })
+
+        $("#selectExportDataType").change(function (){
+            $('#testTable').bootstrapTable('refreshOptions', {
+                exportDataType: $("#selectExportDataType").val()
+            });
+        })
+
+    </script>
+
+</body>
+</html>
